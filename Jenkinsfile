@@ -5,7 +5,7 @@ node {
         // Tahap untuk membangun proyek
         stage('Build') {
             steps {
-                sh 'apt-get update && apt-get install -y nodejs npm'
+                sh 'npm install'
              }
         }
         // Tahap untuk menjalankan tes
