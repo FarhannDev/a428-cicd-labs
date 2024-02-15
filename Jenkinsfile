@@ -1,19 +1,22 @@
-// Menggunakan Scripted Pipeline
-node {
-    // Menggunakan Docker sebagai agent untuk menjalankan langkah-langkah
-    docker.image('node:16-buster-slim').withRun('-p 3000:3000') {
-        // Tahap untuk membangun proyek
+// Menggunakan Declarative Pipeline:
+
+pipeline {
+    agent {
+        docker {
+            image 'node:16-buster-slim'
+            args '-p 3000:3000'
+        }
+    }
+    stages {
         stage('Build') {
             steps {
                 sh 'npm install'
-             }
-        }
-        // Tahap untuk menjalankan tes
-        stage('Test') {
-            steps {
-                sh './jenkins/scripts/test.sh'
             }
-           
+        }
+        stage('Test') { 
+            steps {
+                sh './jenkins/scripts/test.sh' 
+            }
         }
     }
 }
