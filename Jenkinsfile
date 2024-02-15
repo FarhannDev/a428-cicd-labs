@@ -4,11 +4,16 @@ node {
     docker.image('node:16-buster-slim').withRun('-p 3000:3000') {
         // Tahap untuk membangun proyek
         stage('Build') {
-            sh 'npm install'
+            steps {
+                sh 'apt-get update && apt-get install -y nodejs npm'
+             }
         }
         // Tahap untuk menjalankan tes
         stage('Test') {
-            sh './jenkins/scripts/test.sh'
+            steps {
+                sh './jenkins/scripts/test.sh'
+            }
+           
         }
     }
 }
