@@ -15,38 +15,25 @@ node {
         }
     }
 
+    stage('Manual Approval') {
+        // Meminta input dari pengguna
+        timeout(time: 7, unit: 'DAYS') {
+            input message: 'Lanjutkan ke tahap Deploy?',
+                  ok: 'Proceed',
+                  parameters: [choice(choices: ['Proceed', 'Abort'], description: 'Pilih "Proceed" untuk melanjutkan atau "Abort" untuk membatalkan.')]
+        }
+    }
+
     stage('Deploy') {
         checkout scm
         docker.image('node:16-buster-slim').inside('-p 3000:3000') {
+            // Langkah-langkah untuk melakukan deployment
             sh './jenkins/scripts/deliver.sh' 
             input message: 'Sudah selesai menggunakan React App? (Klik "Proceed" untuk mengakhiri)'
+            // Menjalankan perintah sleep untuk menjeda eksekusi selama 1 menit
+            sh 'sleep 60'
+            // Eksekusi Pipeline pada Deploy Stage
             sh './jenkins/scripts/kill.sh' 
         }
     }
 }
-
-
-
-
-// Menggunakan Declarative Pipeline:
-
-// pipeline {
-//     agent {
-//         docker {
-//             image 'node:16-buster-slim'
-//             args '-p 3000:3000'
-//         }
-//     }
-//     stages {
-//         stage('Build') {
-//             steps {
-//                 sh 'npm install'
-//             }
-//         }
-//         stage('Test') { 
-//             steps {
-//                 sh './jenkins/scripts/test.sh' 
-//             }
-//         }
-//     }
-// }
