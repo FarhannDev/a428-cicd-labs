@@ -18,9 +18,13 @@ node {
     stage('Manual Approval') {
         // Meminta input dari pengguna
         timeout(time: 7, unit: 'DAYS') {
-            input message: 'Lanjutkan ke tahap Deploy?',
-                  ok: 'Proceed',
-                  parameters: [choice(choices: ['Proceed', 'Abort'], description: 'Pilih "Proceed" untuk melanjutkan atau "Abort" untuk membatalkan.')]
+            def userInput = input message: 'Lanjutkan ke tahap Deploy?',
+                                  parameters: [
+                                      choice(name: 'ACTION', choices: ['Proceed', 'Abort'], description: 'Pilih "Proceed" untuk melanjutkan atau "Abort" untuk membatalkan.')
+                                  ]
+            if (userInput == 'Abort') {
+                error('Pipeline dihentikan oleh pengguna.')
+            }
         }
     }
 
